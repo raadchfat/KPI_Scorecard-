@@ -64,16 +64,16 @@ export async function parseOpportunitiesFile(file: File): Promise<ProcessedOppor
   const rawData = await parseExcelFile<OpportunityData>(file, 'Opportunities');
   
   return rawData.map(row => ({
-    date: parseDate(row.Date),
-    jobId: String(row.Job),
-    customer: row.Customer,
-    email: row.Email,
-    phone: row.Phone,
-    status: row.Status,
+    date: parseDate(row.Date || ''),
+    jobId: String(row.Job || ''),
+    customer: row.Customer || '',
+    email: row.Email || '',
+    phone: row.Phone || '',
+    status: row.Status || 'Pending',
     technician: normalizeTechnicianName(row['Opportunity Owner']),
     membershipOpportunity: row['Membership Opportunity'] === 'Yes',
     membershipSold: row['Membership Sold'] === 'Yes',
-    revenue: typeof row.Revenue === 'number' ? row.Revenue : parseCurrency(String(row.Revenue))
+    revenue: typeof row.Revenue === 'number' ? row.Revenue : parseCurrency(String(row.Revenue || '0'))
   }));
 }
 
@@ -84,14 +84,14 @@ export async function parseLineItemsFile(file: File): Promise<ProcessedLineItem[
   const rawData = await parseExcelFile<LineItemData>(file, 'Sold Line Items');
   
   return rawData.map(row => ({
-    invoiceDate: parseDate(row['Invoice Date']),
-    customer: row.Customer,
-    jobId: String(row.Job),
+    invoiceDate: parseDate(row['Invoice Date'] || ''),
+    customer: row.Customer || '',
+    jobId: String(row.Job || ''),
     technician: normalizeTechnicianName(row['Opp. Owner']),
-    category: row.Category,
-    lineItem: row['Line Item'],
-    quantity: typeof row.Quantity === 'number' ? row.Quantity : parseInt(String(row.Quantity), 10) || 1,
-    price: typeof row.Price === 'number' ? row.Price : parseCurrency(String(row.Price))
+    category: row.Category || '',
+    lineItem: row['Line Item'] || '',
+    quantity: typeof row.Quantity === 'number' ? row.Quantity : parseInt(String(row.Quantity || '1'), 10) || 1,
+    price: typeof row.Price === 'number' ? row.Price : parseCurrency(String(row.Price || '0'))
   }));
 }
 
@@ -102,12 +102,12 @@ export async function parseJobTimesFile(file: File): Promise<ProcessedJobTime[]>
   const rawData = await parseExcelFile<JobTimeData>(file, 'Job Times');
   
   return rawData.map(row => ({
-    firstAppointment: parseDate(row['First Appointment']),
-    jobId: String(row.Job),
-    jobStatus: row['Job Status'],
-    customer: row.Customer,
+    firstAppointment: parseDate(row['First Appointment'] || ''),
+    jobId: String(row.Job || ''),
+    jobStatus: row['Job Status'] || 'Pending',
+    customer: row.Customer || '',
     technician: normalizeTechnicianName(row['Opportunity Owner']),
-    opportunity: row.Opportunity,
+    opportunity: row.Opportunity || 'Invalid',
     total: parseCurrency(row.Total),
     totalTime: parseTimeToMinutes(row['Total Time']),
     soldTime: parseTimeToMinutes(row['Sold Time']),
@@ -122,14 +122,14 @@ export async function parseAppointmentsFile(file: File): Promise<ProcessedAppoin
   const rawData = await parseExcelFile<AppointmentData>(file, 'Appointments');
   
   return rawData.map(row => ({
-    appointmentId: String(row.Appointment),
-    scheduledFor: parseDateTime(row['Scheduled For']),
-    jobId: String(row.Job),
-    customer: row.Customer,
-    apptStatus: row['Appt Status'],
+    appointmentId: String(row.Appointment || ''),
+    scheduledFor: parseDateTime(row['Scheduled For'] || ''),
+    jobId: String(row.Job || ''),
+    customer: row.Customer || '',
+    apptStatus: row['Appt Status'] || 'Pending',
     technician: normalizeTechnicianName(row.Technician),
-    serviceCategory: row['Service Category'],
-    revenue: typeof row.Revenue === 'number' ? row.Revenue : parseCurrency(String(row.Revenue))
+    serviceCategory: row['Service Category'] || '',
+    revenue: typeof row.Revenue === 'number' ? row.Revenue : parseCurrency(String(row.Revenue || '0'))
   }));
 }
 

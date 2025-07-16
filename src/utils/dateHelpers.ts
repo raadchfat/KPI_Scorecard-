@@ -74,34 +74,47 @@ export function formatDateRange(start: Date, end: Date): string {
 /**
  * Parse date string in MM/DD/YYYY format
  */
-export function parseDate(dateString: string): Date {
-  const [month, day, year] = dateString.split('/').map(Number);
-  return new Date(year, month - 1, day);
+export function parseDate(dateString: string | null | undefined): Date {
+  if (!dateString) return new Date();
+  try {
+    const [month, day, year] = dateString.split('/').map(Number);
+    if (isNaN(month) || isNaN(day) || isNaN(year)) {
+      return new Date();
+    }
+    return new Date(year, month - 1, day);
+  } catch (error) {
+    return new Date();
+  }
 }
 
 /**
  * Parse date string with time in MM/DD/YYYY HH:MM AM/PM format
  */
-export function parseDateTime(dateTimeString: string): Date {
-  // Handle format like "06/01/2025 10:00 AM"
-  const [datePart, timePart] = dateTimeString.split(' ');
-  const date = parseDate(datePart);
-  
-  if (timePart) {
-    const [time, period] = timePart.split(' ');
-    const [hours, minutes] = time.split(':').map(Number);
-    let hour = hours;
+export function parseDateTime(dateTimeString: string | null | undefined): Date {
+  if (!dateTimeString) return new Date();
+  try {
+    // Handle format like "06/01/2025 10:00 AM"
+    const [datePart, timePart] = dateTimeString.split(' ');
+    const date = parseDate(datePart);
     
-    if (period === 'PM' && hours !== 12) {
-      hour += 12;
-    } else if (period === 'AM' && hours === 12) {
-      hour = 0;
+    if (timePart) {
+      const [time, period] = timePart.split(' ');
+      const [hours, minutes] = time.split(':').map(Number);
+      let hour = hours;
+      
+      if (period === 'PM' && hours !== 12) {
+        hour += 12;
+      } else if (period === 'AM' && hours === 12) {
+        hour = 0;
+      }
+      
+      date.setHours(hour, minutes, 0, 0);
     }
     
-    date.setHours(hour, minutes, 0, 0);
+    return date;
+  } catch (error) {
+    return new Date();
   }
-  
-  return date;
 }
 
 /**

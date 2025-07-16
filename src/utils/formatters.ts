@@ -27,7 +27,8 @@ export function formatCount(count: number): string {
 /**
  * Parse currency string to number
  */
-export function parseCurrency(currencyString: string): number {
+export function parseCurrency(currencyString: string | null | undefined): number {
+  if (!currencyString) return 0;
   // Remove $ and commas, then parse
   const cleaned = currencyString.replace(/[$,]/g, '');
   return parseFloat(cleaned) || 0;
@@ -36,7 +37,8 @@ export function parseCurrency(currencyString: string): number {
 /**
  * Parse percentage string to number
  */
-export function parsePercentage(percentageString: string): number {
+export function parsePercentage(percentageString: string | null | undefined): number {
+  if (!percentageString) return 0;
   // Remove % and spaces, then parse
   const cleaned = percentageString.replace(/[%\s]/g, '');
   return parseFloat(cleaned) || 0;
@@ -45,7 +47,8 @@ export function parsePercentage(percentageString: string): number {
 /**
  * Parse time string to minutes
  */
-export function parseTimeToMinutes(timeString: string): number {
+export function parseTimeToMinutes(timeString: string | null | undefined): number {
+  if (!timeString) return 0;
   // Handle format like "4h 48m (288 mins)" or "0h 0m (0 mins)"
   const match = timeString.match(/(\d+)h\s*(\d+)m/);
   if (match) {
@@ -69,7 +72,10 @@ export function getKPIColor(value: number, thresholds: { good: number; warning: 
 /**
  * Normalize technician names
  */
-export function normalizeTechnicianName(name: string): string {
+export function normalizeTechnicianName(name: string | null | undefined): string {
+  // Handle null/undefined values
+  if (!name) return 'Unknown Technician';
+  
   // Remove extra spaces and normalize common variations
   const normalized = name.trim().replace(/\s+/g, ' ');
   
@@ -96,7 +102,8 @@ export function normalizeTechnicianName(name: string): string {
 /**
  * Check if line item contains specific service keywords
  */
-export function containsServiceKeywords(lineItem: string, keywords: string[]): boolean {
+export function containsServiceKeywords(lineItem: string | null | undefined, keywords: string[]): boolean {
+  if (!lineItem) return false;
   const lowerLineItem = lineItem.toLowerCase();
   return keywords.some(keyword => lowerLineItem.includes(keyword.toLowerCase()));
 }
