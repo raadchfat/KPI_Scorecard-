@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BarChart3, AlertCircle, Loader2 } from 'lucide-react';
 import { AppProvider, useAppState, useAppActions } from './hooks/useAppState';
 import { FileUploader } from './components/FileUploader';

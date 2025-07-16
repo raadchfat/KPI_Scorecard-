@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Info } from 'lucide-react';
 import { formatCurrency, formatPercentage, formatCount, getKPIColor } from '../utils/formatters';
 import { KPI_THRESHOLDS } from '../services/kpiCalculator';
